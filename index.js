@@ -8,7 +8,7 @@ const cors = require("cors");
 const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
 
-const HOSTNAME = "127.0.0.1";
+const HOSTNAME = "0.0.0.0";
 const PORT = 7777;
 
 app.use(cors({
