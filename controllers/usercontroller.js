@@ -8,7 +8,7 @@ const register = async (req, res) => {
         const { name, email, password } = req.body;
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ error: "User already exists" })
+            return res.status(400).json({ message: "User already exists" })
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,7 +26,7 @@ const register = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(400).json({ error: "Bad request", message: error.message });
+        res.status(400).json({ message: "Bad request", message: error.message });
     }
 }
 
@@ -41,25 +41,25 @@ const login = async (req, res) => {
 
         // Validate input
         if (!email || !password) {
-            return res.status(400).json({ error: "Email and password are required" });
+            return res.status(400).json({ message: "Email and password are required" });
         }
 
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(401).json({ error: "User not found" });
+            return res.status(401).json({ message: "User not found" });
         }
 
         console.log("password:", password);
         console.log("user.password:", user.password);
 
         if (!user.password) {
-            return res.status(500).json({ error: "Password not found in DB" });
+            return res.status(500).json({ message: "Password not found in DB" });
         }
 
         const isPasswordmatch = await bcrypt.compare(password, user.password);
         if (!isPasswordmatch) {
-            return res.status(401).json({ error: "Invalid credentials" });
+            return res.status(401).json({ message: "Invalid credentials" });
         }
 
 
@@ -74,7 +74,6 @@ const login = async (req, res) => {
         res.cookie("token", token, {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24 * 7,
-            credentials: "include",
             sameSite: "lax",
             secure: false,
         });
@@ -91,7 +90,6 @@ const login = async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({
-            error: "Server error",
             message: error.message
         });
     }
@@ -119,7 +117,7 @@ const logout = async (req, res) => {
             message: "User logout successfully"
         });
     } catch (error) {
-        res.status(400).json({ error: "Bad request", message: error.message });
+        res.status(400).json({ message: "Bad request", message: error.message });
     }
 }
 
